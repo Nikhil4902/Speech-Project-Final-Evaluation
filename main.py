@@ -36,7 +36,7 @@ def main(args: argparse.Namespace) -> None:
     Trains, validates, and evaluates the ASVspoof detection model.
     """
     # load experiment configurations
-    with open(args.config, "r") as f_json:
+    with open(str(args.config).replace("my", ""), "r") as f_json:
         config = json.loads(f_json.read())
     model_config = config["model_config"]
     optim_config = config["optim_config"]
@@ -84,7 +84,14 @@ def main(args: argparse.Namespace) -> None:
         raise ValueError("GPU not detected!")
 
     # define model architecture
-    model = get_model(model_config, device)
+    model: torch.nn.Module = get_model(model_config, device)
+    model.load_state_dict(torch.load(config["model_path"], map_location=device))
+    p_num = 0
+    for param in model.parameters():
+        if p_num < 75:
+            param.requires_grad = False
+        p_num += 1
+
 
     # define dataloaders
     trn_loader, dev_loader, eval_loader = get_loader(
@@ -92,8 +99,12 @@ def main(args: argparse.Namespace) -> None:
 
     # evaluates pretrained model and exit script
     if args.eval:
-        model.load_state_dict(
-            torch.load(config["model_path"], map_location=device))
+        if "my" in str(args.config):
+            model.load_state_dict(
+                torch.load(config["model_path"][:-4] + "my" + config["model_path"][-4:], map_location=device))
+        else:
+            model.load_state_dict(
+                torch.load(config["model_path"], map_location=device))
         print("Model loaded : {}".format(config["model_path"]))
         print("Start evaluation...")
         produce_evaluation_file(eval_loader, model, device,
@@ -170,6 +181,8 @@ def main(args: argparse.Namespace) -> None:
                     best_eval_tdcf = eval_tdcf
                     torch.save(model.state_dict(),
                                model_save_path / "best.pth")
+                    print("BEST TILL NOW. EER: {:.3f}, min t-DCF: {:.5f}".format(
+        best_eval_eer, best_eval_tdcf))
                 if len(log_text) > 0:
                     print(log_text)
                     f_log.write(log_text + "\n")
@@ -198,6 +211,7 @@ def main(args: argparse.Namespace) -> None:
 
     torch.save(model.state_dict(),
                model_save_path / "swa.pth")
+    torch.save(model.state_dict(),f"models/weights/{str(args.config).replace('my','')[:-5]}my.pth")
 
     if eval_eer <= best_eval_eer:
         best_eval_eer = eval_eer
