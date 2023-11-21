@@ -99,6 +99,7 @@ def main(args: argparse.Namespace) -> None:
 
     # evaluates pretrained model and exit script
     if args.eval:
+        model.load_state_dict("best.pth")
         if "my" in str(args.config):
             model.load_state_dict(
                 torch.load(config["model_path"][:-4] + "my" + config["model_path"][-4:], map_location=device))
