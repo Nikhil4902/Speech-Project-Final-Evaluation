@@ -99,13 +99,7 @@ def main(args: argparse.Namespace) -> None:
 
     # evaluates pretrained model and exit script
     if args.eval:
-        model.load_state_dict("best.pth")
-        if "my" in str(args.config):
-            model.load_state_dict(
-                torch.load(config["model_path"][:-4] + "my" + config["model_path"][-4:], map_location=device))
-        else:
-            model.load_state_dict(
-                torch.load(config["model_path"], map_location=device))
+        model.load_state_dict(torch.load("best.pth", map_location=device))
         print("Model loaded : {}".format(config["model_path"]))
         print("Start evaluation...")
         produce_evaluation_file(eval_loader, model, device,
