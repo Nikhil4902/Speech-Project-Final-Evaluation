@@ -1,0 +1,32 @@
+Device: cuda
+no. model params:85306
+no. training files: 8831
+no. validation files: 13316
+Model loaded : ./models/weights/AASIST-L.pth
+Start evaluation...
+
+
+CM SYSTEM
+	EER		= 2.386073792 % (Equal error rate for countermeasure)
+
+TANDEM
+	min-tDCF		= 0.18321640
+
+BREAKDOWN CM SYSTEM
+	EER A07		= 0.282749614 % (Equal error rate for A07
+	EER A08		= 2.094249871 % (Equal error rate for A08
+	EER A09		= 0.000000000 % (Equal error rate for A09
+	EER A10		= 1.940459439 % (Equal error rate for A10
+	EER A11		= 0.188499742 % (Equal error rate for A11
+	EER A12		= 0.352417381 % (Equal error rate for A12
+	EER A13		= 0.141374807 % (Equal error rate for A13
+	EER A14		= 0.000000000 % (Equal error rate for A14
+	EER A15		= 2.399542316 % (Equal error rate for A15
+	EER A16		= 2.399542316 % (Equal error rate for A16
+	EER A17		= 1.364583860 % (Equal error rate for A17
+	EER A18		= 2.563210809 % (Equal error rate for A18
+	EER A19		= 1.399542316 % (Equal error rate for A19
+
+
+Scores saved to exp_result/LA_AASIST-L_ep100_bs24/eval_scores_using_best_dev_model.txt
+DONE.
